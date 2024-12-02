@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Flights</title>
+    <style>
+        /* Basic styling for body and layout */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            background-color: #f5f5f5;
+        }
+        /* Sidebar styling */
+        .sidebar {
+            width: 250px;
+            background-color: #333;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            padding-top: 20px;
+            height: 100vh;
+            position: fixed;
+        }
+        .sidebar a {
+            padding: 15px;
+            color: #fff;
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.3s;
+        }
+        .sidebar a:hover {
+            background-color: #575757;
+        }
+        /* Main content styling */
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            width: 100%;
+        }
+        .content h1 {
+            text-align: center;
+            color: #333;
+        }
+        /* Table styling for flights list */
+        .flight-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .flight-table th, .flight-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .flight-table th {
+            background-color: #333;
+            color: #fff;
+        }
+        .flight-table tr:hover {
+            background-color: #f1f1f1;
+        }
+        .action-btn {
+            padding: 8px 12px;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .edit-btn {
+            background-color: #4CAF50;
+        }
+        .delete-btn {
+            background-color: #f44336;
+        }
+        .add-flight-btn {
+            margin-top: 20px;
+            padding: 10px 15px;
+            color: #fff;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        /* Modal styling */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            width: 400px;
+            text-align: center;
+        }
+        .modal-content input {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .modal-content button {
+            padding: 10px 15px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2 style="text-align: center;">Admin Panel</h2>
+    <a href="admindash.html">Dashboard</a>
+    <a href="manageflights.html">Manage Flights</a>
+    <a href="managebookings.html">Manage Bookings</a>
+    <a href="adminsettings.html">Admin Settings</a>
+</div>
+
+<div class="content">
+    <h1>Manage Flights</h1>
+
+    <!-- Button to add a new flight -->
+    <button class="add-flight-btn" onclick="openAddFlightModal()">Add New Flight</button>
+
+    <!-- Flights table -->
+    <table class="flight-table" id="flightTable">
+        <thead>
+            <tr>
+                <th>Flight Number</th>
+                <th>Origin</th>
+                <th>Destination</th>
+                <th>Departure Time</th>
+                <th>Arrival Time</th>
+                <th>Price</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>ND214</td>
+                <td>New Delhi</td>
+                <td>Los Angeles</td>
+                <td>08:00 AM</td>
+                <td>09:00 AM</td>
+                <td>$400</td>
+                <td>
+                    <button class="action-btn edit-btn" onclick="openEditFlightModal(this)">Edit</button>
+                    <button class="action-btn delete-btn" onclick="deleteFlight(this)">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+        <tbody>
+            <tr>
+                <td>BG223</td>
+                <td>Bangalore</td>
+                <td>New York</td>
+                <td>09:00 AM</td>
+                <td>05:00 AM</td>
+                <td>$300</td>
+                <td>
+                    <button class="action-btn edit-btn" onclick="openEditFlightModal(this)">Edit</button>
+                    <button class="action-btn delete-btn" onclick="deleteFlight(this)">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+        <tbody>
+            <tr>
+                <td>CH123</td>
+                <td>Chennai</td>
+                <td>Chicago</td>
+                <td>12:00 AM</td>
+                <td>03:00 AM</td>
+                <td>$300</td>
+                <td>
+                    <button class="action-btn edit-btn" onclick="openEditFlightModal(this)">Edit</button>
+                    <button class="action-btn delete-btn" onclick="deleteFlight(this)">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+        <tbody>
+            <tr>
+                <td>HYD123</td>
+                <td>Hyderabad</td>
+                <td>Dubai</td>
+                <td>02:00 AM</td>
+                <td>06:00 AM</td>
+                <td>$300</td>
+                <td>
+                    <button class="action-btn edit-btn" onclick="openEditFlightModal(this)">Edit</button>
+                    <button class="action-btn delete-btn" onclick="deleteFlight(this)">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+        <tbody>
+            <tr>
+                <td>VJA123</td>
+                <td>Vijayawada</td>
+                <td>Miami</td>
+                <td>06:00 AM</td>
+                <td>10:00 AM</td>
+                <td>$300</td>
+                <td>
+                    <button class="action-btn edit-btn" onclick="openEditFlightModal(this)">Edit</button>
+                    <button class="action-btn delete-btn" onclick="deleteFlight(this)">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+        <tbody>
+            <tr>
+                <td>NYC123</td>
+                <td>New York</td>
+                <td>Los Angeles</td>
+                <td>08:00 AM</td>
+                <td>11:00 AM</td>
+                <td>$300</td>
+                <td>
+                    <button class="action-btn edit-btn" onclick="openEditFlightModal(this)">Edit</button>
+                    <button class="action-btn delete-btn" onclick="deleteFlight(this)">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Add Flight Modal -->
+<div class="modal" id="addFlightModal">
+    <div class="modal-content">
+        <h3>Add New Flight</h3>
+        <input type="text" id="newFlightNumber" placeholder="Flight Number">
+        <input type="text" id="newOrigin" placeholder="Origin">
+        <input type="text" id="newDestination" placeholder="Destination">
+        <input type="text" id="newDepartureTime" placeholder="Departure Time">
+        <input type="text" id="newArrivalTime" placeholder="Arrival Time">
+        <input type="text" id="newPrice" placeholder="Price">
+        <button onclick="addFlight()">Add Flight</button>
+        <button onclick="closeModal('addFlightModal')">Cancel</button>
+    </div>
+</div>
+
+<!-- Edit Flight Modal -->
+<div class="modal" id="editFlightModal">
+    <div class="modal-content">
+        <h3>Edit Flight</h3>
+        <input type="text" id="editFlightNumber" placeholder="Flight Number">
+        <input type="text" id="editOrigin" placeholder="Origin">
+        <input type="text" id="editDestination" placeholder="Destination">
+        <input type="text" id="editDepartureTime" placeholder="Departure Time">
+        <input type="text" id="editArrivalTime" placeholder="Arrival Time">
+        <input type="text" id="editPrice" placeholder="Price">
+        <button onclick="saveFlightEdits()">Save Changes</button>
+        <button onclick="closeModal('editFlightModal')">Cancel</button>
+    </div>
+</div>
+
+<script>
+    function openAddFlightModal() {
+        document.getElementById('addFlightModal').style.display = 'flex';
+    }
+
+    function openEditFlightModal(button) {
+        const row = button.closest('tr');
+        document.getElementById('editFlightNumber').value = row.cells[0].innerText;
+        document.getElementById('editOrigin').value = row.cells[1].innerText;
+        document.getElementById('editDestination').value = row.cells[2].innerText;
+        document.getElementById('editDepartureTime').value = row.cells[3].innerText;
+        document.getElementById('editArrivalTime').value = row.cells[4].innerText;
+        document.getElementById('editPrice').value = row.cells[5].innerText;
+        document.getElementById('editFlightModal').style.display = 'flex';
+        document.getElementById('editFlightModal').dataset.rowIndex = row.rowIndex;
+    }
+
+    function addFlight() {
+        const table = document.getElementById('flightTable').getElementsByTagName('tbody')[0];
+        const newRow = table.insertRow();
+        newRow.innerHTML = `
+            <td>${document.getElementById('newFlightNumber').value}</td>
+            <td>${document.getElementById('newOrigin').value}</td>
+            <td>${document.getElementById('newDestination').value}</td>
+            <td>${document.getElementById('newDepartureTime').value}</td>
+            <td>${document.getElementById('newArrivalTime').value}</td>
+            <td>${document.getElementById('newPrice').value}</td>
+            <td>
+                <button class="action-btn edit-btn" onclick="openEditFlightModal(this)">Edit</button>
+                <button class="action-btn delete-btn" onclick="deleteFlight(this)">Delete</button>
+            </td>`;
+        closeModal('addFlightModal');
+    }
+
+    function saveFlightEdits() {
+        const rowIndex = document.getElementById('editFlightModal').dataset.rowIndex;
+        const row = document.getElementById('flightTable').rows[rowIndex];
+        row.cells[0].innerText = document.getElementById('editFlightNumber').value;
+        row.cells[1].innerText = document.getElementById('editOrigin').value;
+        row.cells[2].innerText = document.getElementById('editDestination').value;
+        row.cells[3].innerText = document.getElementById('editDepartureTime').value;
+        row.cells[4].innerText = document.getElementById('editArrivalTime').value;
+        row.cells[5].innerText = document.getElementById('editPrice').value;
+        closeModal('editFlightModal');
+    }
+
+    function deleteFlight(button) {
+        const row = button.closest('tr');
+        row.remove();
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+</script>
+
+</body>
+</html>

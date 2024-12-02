@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Reservation</title>
+    <link rel="icon" href="flight.png" size="32x32">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="cloud cloud1">☁️</div>
+    <div class="cloud cloud2">⛅</div>
+    <div class="cloud cloud3">🌧️</div>
+    <div class="cloud cloud4">☁️</div>
+    <div class="cloud cloud5">⛅</div>
+    <div class="cloud cloud6">🌧️</div>
+    <div class="cloud cloud7">☁️</div>
+    <div class="login-container">
+        <h2>Login</h2>
+        <form method="post" id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                
+                <div class="form-group">
+                    <label><input type="checkbox" name="remember"> Remember me</label>
+                </div>
+                
+                <button type="submit">Login</button>
+        </form>
+        <p class="error-message" id="errorMessage"></p>
+        <a href="admin.html" class="admin-link">Admin login? Click here</a>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevents actual form submission
+            window.location.href = 'search.html'; // Redirects to search.html
+        });
+    </script>
+    
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Search</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    
+    <style>
+        /* Your existing CSS */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e9f5f2;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .container {
+            display: flex;
+            width: 100%;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            padding-top: 20px;
+        }
+        .sidebar a {
+            padding: 15px;
+            text-decoration: none;
+            color: #ecf0f1;
+            display: block;
+            font-size: 1.1em;
+        }
+        .sidebar a:hover {
+            background-color: #34495e;
+        }
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .search-container {
+            width: 90%;
+            max-width: 800px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .search-container h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            text-align: center;
+        }
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+            display: flex;
+            flex-direction: column;
+            margin: 0 10px;
+        }
+
+        .form-group label {
+            font-size: 1em;
+            margin-bottom: 5px;
+            color: #34495e;
+        }
+        .form-group select, .form-group input {
+            padding: 10px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            font-size: 1em;
+            width: 100%;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+        }
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #1abc9c; /* Teal border on focus */
+            background-color: #ffffff; /* White background on focus */
+        }
+        
+        .trip-type {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+            flex-direction: row;
+            color: #34495e;
+        }
+        
+        .search-button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .search-button-container button {
+            width: 100%;
+            padding: 12px;
+            background-color: #1abc9c; /* Teal for button */
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1em;
+            cursor: pointer;
+        }
+        
+        .search-button-container button:hover {
+            background-color: #16a085; /* Darker teal on hover */
+        }
+
+        
+        /* Map container styling */
+        #map {
+            width: 100%;
+            height: 400px;
+            margin-top: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <div class="sidebar">
+            <a href="search.html">Dashboard</a>
+            <a href="personal.html">Personal Details</a>
+            <a href="payment_history.html">Payment History</a>
+        </div>
+    
+        <div class="main-content">
+            <div class="search-container">
+                <h2>Flight Search</h2>
+                <form action="result.html" method="get">
+                    <!-- From Location -->
+                    <div class="form-group">
+                        <label for="from">From:</label>
+                        <select id="from" name="from" required>
+                            <option value="">Select Departure City</option>
+                            <option value="New Delhi">New Delhi</option>
+                            <option value="Bangalore">Bangalore</option>
+                            <option value="Chennai">Chennai</option>
+                            <option value="Hyderabad">Hyderabad</option>
+                            <option value="Vijayawada">Vijayawada</option>
+                        </select>
+                    </div>
+                    
+                    <!-- To Location -->
+                    <div class="form-group">
+                        <label for="to">To:</label>
+                        <select id="to" name="to" required>
+                            <option value="">Select Arrival City</option>
+                            <option value="New York">New York</option>
+                            <option value="Los Angeles">Los Angeles</option>
+                            <option value="Chicago">Chicago</option>
+                            <option value="Dubai">Dubai</option>
+                            <option value="Miami">Miami</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Trip Type Selection (One-Way or Round-Trip) -->
+                    <div class="form-group trip-type">
+                        <label><input type="radio" name="trip_type" value="one-way" checked> One-Way</label>
+                        <label><input type="radio" name="trip_type" value="round-trip"> Round-Trip</label>
+                    </div>
+                    
+                    <!-- Departure Date -->
+                    <div class="form-group">
+                        <label for="departure-date">Departure Date:</label>
+                        <input type="date" id="departure-date" name="departure_date" required>
+                    </div>
+                     <!-- Return Date (optional, shown only if round-trip is selected) -->
+                <div class="form-group" id="return-date-group" style="display: none;">
+                    <label for="return-date">Return Date:</label>
+                    <input type="date" id="return-date" name="return_date">
+                </div>
+                
+                <!-- Passengers -->
+                <div class="form-group">
+                    <label for="passengers">Passengers:</label>
+                    <select id="passengers" name="passengers" required>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+                
+                <!-- Search Button -->
+                <div class="search-button-container">
+                    <button type="submit">Search Flights</button>
+                </div>
+            </form>
+
+        
+        <!-- Map Section -->
+        <h2>View Airports</h2>
+        <div id="map"></div> <!-- Map container -->
+    </div>
+</div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+    const tripTypeInputs = document.querySelectorAll('input[name="trip_type"]');
+    const returnDateGroup = document.getElementById('return-date-group');
+    
+    tripTypeInputs.forEach(input => {
+        input.addEventListener('change', () => {
+            if (input.value === 'round-trip') {
+                returnDateGroup.style.display = 'block';
+            } else {
+                returnDateGroup.style.display = 'none';
+                document.getElementById('return-date').value = ''; // Clear return date if one-way is selected
+            }
+        });
+    });
+
+    // Initialize the map
+    const map = L.map('map').setView([20.5937, 78.9629], 5); // Initial view centered on India
+
+    // Add a tile layer to the map
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Define airport coordinates
+    const airports = {
+        "New Delhi": [28.5562, 77.1000],
+        "Bangalore": [12.9716, 77.5946],
+        "Chennai": [13.0827, 80.2707],
+        "Hyderabad": [17.3871, 78.4917],
+        "Vijayawada": [16.5062, 80.6480],
+        "New York": [40.7128, -74.0060],
+        "Los Angeles": [34.0522, -118.2437],
+        "Chicago": [41.8781, -87.6298],
+        "Dubai": [25.276987, 55.296249],
+        "Miami": [25.7617, -80.1918]
+    };
+
+    // Add markers for each airport
+    for (const [city, coords] of Object.entries(airports)) {
+        L.marker(coords).addTo(map)
+            .bindPopup(`<b>${city}</b>`)
+            .openPopup();
+    }
+</script>
+
+</body>
+</html>

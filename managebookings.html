@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Bookings</title>
+    <style>
+        /* Basic styling for layout */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            background-color: #f5f5f5;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #333;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            padding-top: 20px;
+            height: 100vh;
+            position: fixed;
+        }
+        .sidebar a {
+            padding: 15px;
+            color: #fff;
+            text-decoration: none;
+            display: block;
+        }
+        .sidebar a:hover {
+            background-color: #575757;
+        }
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            width: 100%;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #333;
+            color: #fff;
+        }
+        .button {
+            padding: 8px 16px;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+        .edit-button {
+            background-color: #4CAF50;
+        }
+        .delete-button {
+            background-color: #e74c3c;
+        }
+        .save-button {
+            background-color: #4CAF50;
+        }
+        .cancel-button {
+            background-color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2 style="text-align: center;">Admin Panel</h2>
+    <a href="admindash.html">Dashboard</a>
+    <a href="manageflights.html">Manage Flights</a>
+    <a href="managebookings.html">Manage Bookings</a>
+    <a href="adminsettings.html">Admin Settings</a>
+</div>
+
+<div class="content">
+    <h1>Manage Bookings</h1>
+
+    <!-- Booking Table -->
+    <table id="bookings-table">
+        <thead>
+            <tr>
+                <th>Booking ID</th>
+                <th>Passenger Name</th>
+                <th>Flight Number</th>
+                <th>Departure</th>
+                <th>Destination</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Booking rows will be generated dynamically -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+    // Sample bookings data (replace with dynamic data as needed)
+    const bookings = [
+        { id: 'B001', name: 'John Doe', flightNumber: 'ND214', from: 'New Delhi', to: 'Los Angeles', date: '2024-12-01' },
+        { id: 'B002', name: 'Jane Smith', flightNumber: 'BG223', from: 'Bangalore', to: 'New York', date: '2024-12-03' },
+        { id: 'B003', name: 'Alice Brown', flightNumber: 'CH123', from: 'Chennai', to: 'Chicago', date: '2024-12-05' },
+        { id: 'B004', name: 'Michael Johnson', flightNumber: 'HYD123', from: 'Hyderabad', to: 'Dubai', date: '2024-12-04' },
+        { id: 'B005', name: 'Lucy Green', flightNumber: 'VJA123', from: 'Vijayawada', to: 'Miami', date: '2024-12-05' },
+        // Additional sample data
+        { id: 'B006', name: 'Robert Wilson', flightNumber: 'NYC123', from: 'New York', to: 'Los Angeles', date: '2024-12-06' },
+        { id: 'B007', name: 'Sarah Lee', flightNumber: 'ND214', from: 'New Delhi', to: 'Los Angeles', date: '2024-12-07' },
+        { id: 'B008', name: 'Chris Evans', flightNumber: 'BG223', from: 'Bangalore', to: 'New York', date: '2024-12-08' },
+        { id: 'B009', name: 'Emma Thomas', flightNumber: 'CH123', from: 'Chennai', to: 'Chicago', date: '2024-12-09' },
+        { id: 'B010', name: 'Tom Harris', flightNumber: 'HYD123', from: 'Hyderabad', to: 'Dubai', date: '2024-12-10' },
+        { id: 'B011', name: 'David King', flightNumber: 'VJA123', from: 'Vijayawada', to: 'Miami', date: '2024-12-11' },
+        { id: 'B012', name: 'Olivia Scott', flightNumber: 'NYC123', from: 'New York', to: 'Los Angeles', date: '2024-12-12' },
+        { id: 'B013', name: 'Mia Walker', flightNumber: 'ND214', from: 'New Delhi', to: 'Los Angeles', date: '2024-12-13' },
+        { id: 'B014', name: 'Henry Carter', flightNumber: 'BG223', from: 'Bangalore', to: 'New York', date: '2024-12-14' },
+        { id: 'B015', name: 'Sophia Clark', flightNumber: 'CH123', from: 'Chennai', to: 'Chicago', date: '2024-12-15' },
+        { id: 'B016', name: 'Daniel Allen', flightNumber: 'HYD123', from: 'Hyderabad', to: 'Dubai', date: '2024-12-16' },
+        { id: 'B017', name: 'Isabella White', flightNumber: 'VJA123', from: 'Vijayawada', to: 'Miami', date: '2024-12-17' },
+        { id: 'B018', name: 'Lucas Young', flightNumber: 'NYC123', from: 'New York', to: 'Los Angeles', date: '2024-12-18' },
+        { id: 'B019', name: 'Amelia Walker', flightNumber: 'ND214', from: 'New Delhi', to: 'Los Angeles', date: '2024-12-19' },
+        { id: 'B020', name: 'Alexander Green', flightNumber: 'BG223', from: 'Bangalore', to: 'New York', date: '2024-12-20' },
+
+    ];
+
+    const tableBody = document.getElementById('bookings-table').querySelector('tbody');
+
+    function displayBookings() {
+        tableBody.innerHTML = '';
+        bookings.forEach((booking, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${booking.id}</td>
+                <td>${booking.name}</td>
+                <td>${booking.flightNumber}</td>
+                <td>${booking.from}</td>
+                <td>${booking.to}</td>
+                <td>${booking.date}</td>
+                <td>
+                    <button class="button edit-button" onclick="editBooking(${index})">Edit</button>
+                    <button class="button delete-button" onclick="deleteBooking(${index})">Delete</button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    function editBooking(index) {
+        const booking = bookings[index];
+        const row = tableBody.rows[index];
+
+        row.innerHTML = `
+            <td>${booking.id}</td>
+            <td><input type="text" value="${booking.name}"></td>
+            <td><input type="text" value="${booking.flightNumber}"></td>
+            <td><input type="text" value="${booking.from}"></td>
+            <td><input type="text" value="${booking.to}"></td>
+            <td><input type="date" value="${booking.date}"></td>
+            <td>
+                <button class="button save-button" onclick="saveBooking(${index})">Save</button>
+                <button class="button cancel-button" onclick="displayBookings()">Cancel</button>
+            </td>
+        `;
+    }
+
+    function saveBooking(index) {
+        const row = tableBody.rows[index];
+        const inputs = row.querySelectorAll('input');
+
+        // Update booking data
+        bookings[index] = {
+            ...bookings[index],
+            name: inputs[0].value,
+            flightNumber: inputs[1].value,
+            from: inputs[2].value,
+            to: inputs[3].value,
+            date: inputs[4].value,
+        };
+
+        displayBookings();
+    }
+
+    function deleteBooking(index) {
+        if (confirm(`Are you sure you want to delete booking ID: ${bookings[index].id}?`)) {
+            bookings.splice(index, 1);
+            displayBookings();
+        }
+    }
+
+    // Display bookings on page load
+    displayBookings();
+</script>
+
+</body>
+</html>

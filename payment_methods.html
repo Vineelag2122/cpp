@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Methods</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f2f2f2;
+        }
+        .payment-container {
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+        }
+        .payment-methods {
+            margin: 20px 0;
+        }
+        .payment-method {
+            background-color: #1abc9c;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: block;
+            margin: 10px 0;
+            text-align: center;
+        }
+        .payment-method:hover {
+            background-color: #16a085;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="payment-container">
+        <h1>Select Payment Method</h1>
+        <div class="payment-methods">
+            <button class="payment-method" onclick="payWithUPI()">Pay with UPI</button>
+            <button class="payment-method" onclick="payWithCard()">Pay with Card</button>
+        </div>
+    </div>
+
+    <script>
+        // Step 1: Get URL parameters for flight details
+        const urlParams = new URLSearchParams(window.location.search);
+        const airline = urlParams.get('airline');
+        const flightNumber = urlParams.get('flightNumber');
+        const time = urlParams.get('time');
+        const price = urlParams.get('price');
+        const duration = urlParams.get('duration');
+        const seats = urlParams.get('seats');
+
+        // Display booking details on the payment page (optional)
+        console.log('Flight Details:', airline, flightNumber, time, price, duration, seats);
+
+        // Step 2: Payment methods handling
+        function payWithUPI() {
+            alert('Redirecting to UPI payment gateway...');
+            // In a real-world scenario, you'd integrate a UPI payment gateway here
+        }
+
+        function payWithCard() {
+            alert('Redirecting to Credit/Debit card payment gateway...');
+            // In a real-world scenario, you'd integrate a card payment gateway here
+        }
+    </script>
+
+</body>
+</html>

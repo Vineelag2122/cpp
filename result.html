@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Available Flights</title>
+    <style>
+        /* Basic styling for layout and sidebar */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            color: #333;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #333;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            padding-top: 20px;
+        }
+
+        .sidebar a {
+            padding: 15px;
+            text-decoration: none;
+            color: #fff;
+            display: block;
+            font-size: 1.1em;
+        }
+
+        .sidebar a:hover {
+            background-color: #575757;
+        }
+
+        .content-container {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        #flights-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .flight-card {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+        }
+
+        .flight-card p {
+            margin: 5px 0;
+        }
+
+        .select-button, .book-button {
+            background-color: #1abc9c;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .select-button:hover, .book-button:hover {
+            background-color: #16a085;
+        }
+
+        /* Modal styling */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .close-button {
+            background-color: #e74c3c;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .close-button:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <a href="search.html">Dashboard</a>
+        <a href="personal.html">Personal Details</a>
+        <a href="payment_history.html">Payment History</a>
+    </div>
+
+    <div class="content-container">
+        <h1>Available Flights</h1>
+        <div id="flights-container">
+            <!-- Flights will be displayed here -->
+        </div>
+    </div>
+
+    <!-- Modal for flight details -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h2>Flight Details</h2>
+            <div id="modal-details"></div>
+            <button class="close-button" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // Step 1: Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const from = urlParams.get('from');
+        const to = urlParams.get('to');
+        const departureDate = urlParams.get('departure_date');
+
+        // Step 2: Display search criteria
+        const flightsContainer = document.getElementById('flights-container');
+        flightsContainer.innerHTML = `<h2>Flights from ${from} to ${to} on ${departureDate}</h2>`;
+
+        // Step 3: Define available flights
+        const availableFlights = [
+            { airline: 'Airline A', time: '10:00 AM', price: '$200', flightNumber: 'AA123', duration: '3h 45m', seats: 'Economy' },
+            { airline: 'Airline B', time: '3:00 PM', price: '$250', flightNumber: 'BB456', duration: '4h 10m', seats: 'Economy' },
+            { airline: 'Airline C', time: '8:00 PM', price: '$220', flightNumber: 'CC789', duration: '3h 30m', seats: 'Business' },
+            { airline: 'Airline D', time: '6:30 AM', price: '$180', flightNumber: 'DD012', duration: '4h 5m', seats: 'Economy' },
+            { airline: 'Airline E', time: '9:15 PM', price: '$300', flightNumber: 'EE345', duration: '5h 0m', seats: 'First Class' },
+        ];
+
+        // Step 4: Display available flights with "Select" and "Book" buttons
+        availableFlights.forEach(flight => {
+            const flightCard = document.createElement('div');
+            flightCard.className = 'flight-card';
+            flightCard.innerHTML = `
+                <p><strong>Airline:</strong> ${flight.airline}</p>
+                <p><strong>Time:</strong> ${flight.time}</p>
+                <p><strong>Price:</strong> ${flight.price}</p>
+                <button class="select-button" onclick="showDetails('${flight.airline}', '${flight.flightNumber}', '${flight.time}', '${flight.price}', '${flight.duration}', '${flight.seats}')">Select</button>
+                <button class="book-button" onclick="bookFlight('${flight.airline}', '${flight.flightNumber}', '${flight.time}', '${flight.price}', '${flight.duration}', '${flight.seats}')">Book</button>
+            `;
+            flightsContainer.appendChild(flightCard);
+        });
+
+        // Step 5: Show flight details in modal
+        function showDetails(airline, flightNumber, time, price, duration, seats) {
+            const modalDetails = document.getElementById('modal-details');
+            modalDetails.innerHTML = `
+                <p><strong>Airline:</strong> ${airline}</p>
+                <p><strong>Flight Number:</strong> ${flightNumber}</p>
+                <p><strong>Departure Time:</strong> ${time}</p>
+                <p><strong>Price:</strong> ${price}</p>
+                <p><strong>Duration:</strong> ${duration}</p>
+                <p><strong>Seats:</strong> ${seats}</p>
+            `;
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        // Close modal function
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        // Step 6: Book the flight (redirect to booking page)
+        function bookFlight(airline, flightNumber, time, price, duration, seats) {
+            const bookingPageUrl = `booking.html?airline=${encodeURIComponent(airline)}&flightNumber=${encodeURIComponent(flightNumber)}&time=${encodeURIComponent(time)}&price=${encodeURIComponent(price)}&duration=${encodeURIComponent(duration)}&seats=${encodeURIComponent(seats)}`;
+            window.location.href = bookingPageUrl;
+        }
+    </script>
+</body>
+</html>

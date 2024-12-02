@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f2f2f2;
+        }
+        .booking-container {
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+        }
+        .booking-details p {
+            margin: 10px 0;
+        }
+        .seat-container {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+            justify-items: center;
+        }
+        .seat {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #1abc9c;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background-color: #fff;
+        }
+        .seat.selected {
+            background-color: #1abc9c;
+            color: #fff;
+        }
+        .seat.unavailable {
+            background-color: #ccc;
+            border-color: #aaa;
+            cursor: not-allowed;
+        }
+        .confirm-button {
+            background-color: #1abc9c;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto;
+        }
+        .confirm-button:hover {
+            background-color: #16a085;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="booking-container">
+        <h1>Confirm Your Booking</h1>
+        <div class="booking-details" id="booking-details">
+            <!-- Booking details will be populated here -->
+        </div>
+        <h2>Choose Your Seats</h2>
+        <div class="seat-container" id="seat-container">
+            <!-- Seats will be generated here -->
+        </div>
+        <button class="confirm-button" onclick="confirmBooking()">Confirm Booking</button>
+    </div>
+
+    <script>
+        // Step 1: Get URL parameters for flight details
+        const urlParams = new URLSearchParams(window.location.search);
+        const airline = urlParams.get('airline');
+        const flightNumber = urlParams.get('flightNumber');
+        const time = urlParams.get('time');
+        const price = urlParams.get('price');
+        const duration = urlParams.get('duration');
+        const seats = urlParams.get('seats');
+
+        // Step 2: Display the booking details
+        const bookingDetails = document.getElementById('booking-details');
+        bookingDetails.innerHTML = `
+            <p><strong>Airline:</strong> ${airline}</p>
+            <p><strong>Flight Number:</strong> ${flightNumber}</p>
+            <p><strong>Time:</strong> ${time}</p>
+            <p><strong>Price:</strong> ${price}</p>
+            <p><strong>Duration:</strong> ${duration}</p>
+        `;
+
+        // Step 3: Generate seats dynamically
+        const seatContainer = document.getElementById('seat-container');
+        const totalSeats = 36; // Total number of seats
+        const unavailableSeats = [5, 10, 18, 20]; // Example of unavailable seats
+        const selectedSeats = [];
+
+        for (let i = 1; i <= totalSeats; i++) {
+            const seat = document.createElement('div');
+            seat.classList.add('seat');
+            seat.textContent = i;
+
+            // Mark unavailable seats
+            if (unavailableSeats.includes(i)) {
+                seat.classList.add('unavailable');
+            } else {
+                // Add click event for selecting/deselecting seats
+                seat.addEventListener('click', () => {
+                    if (seat.classList.contains('selected')) {
+                        seat.classList.remove('selected');
+                        const index = selectedSeats.indexOf(i);
+                        if (index > -1) selectedSeats.splice(index, 1);
+                    } else {
+                        seat.classList.add('selected');
+                        selectedSeats.push(i);
+                    }
+                });
+            }
+
+            seatContainer.appendChild(seat);
+        }
+
+        // Step 4: Confirm booking and pass selected seats to the next page
+        function confirmBooking() {
+            if (selectedSeats.length === 0) {
+                alert('Please select at least one seat.');
+                return;
+            }
+
+            // Redirect to the personal details page with flight and seat details
+            const personalDetailsPageUrl = `personal.html?airline=${encodeURIComponent(airline)}&flightNumber=${encodeURIComponent(flightNumber)}&time=${encodeURIComponent(time)}&price=${encodeURIComponent(price)}&duration=${encodeURIComponent(duration)}&seats=${encodeURIComponent(selectedSeats.join(','))}`;
+            window.location.href = personalDetailsPageUrl;
+        }
+    </script>
+</body>
+</html>

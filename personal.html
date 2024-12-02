@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Details</title>
+    <style>
+        /* Basic styling for the layout and form */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #333;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            padding-top: 20px;
+            height: 100vh;
+        }
+        .sidebar a {
+            padding: 15px;
+            text-decoration: none;
+            color: #fff;
+            display: block;
+        }
+        .sidebar a:hover {
+            background-color: #575757;
+        }
+        .content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto; /* Enable vertical scrolling */
+        }
+        .form-container {
+            max-width: 500px;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .form-group button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .form-group button:hover {
+            background-color: #45a049;
+        }
+        #display-container {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #e9e9e9;
+            border-radius: 8px;
+        }
+        #useDetailsButton {
+            margin-top: 15px;
+            background-color: #1abc9c;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            display: none; /* Initially hidden */
+        }
+        #useDetailsButton:hover {
+            background-color: #16a085;
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <a href="search.html">Dashboard</a>
+    <a href="personal.html">Personal Details</a>
+    <a href="payment_history.html">Payment History</a>
+</div>
+
+<div class="content">
+    <div class="form-container">
+        <h2>Enter Personal Details</h2>
+        <form id="detailsForm">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" required>
+            </div>
+            <div class="form-group">
+                <label for="age">Age:</label>
+                <input type="number" id="age" required>
+            </div>
+            <div class="form-group">
+                <label for="passport">Passport Number:</label>
+                <input type="text" id="passport" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number:</label>
+                <input type="tel" id="phone" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" required>
+            </div>
+            <div class="form-group">
+                <button type="button" onclick="saveDetails()">Save Details</button>
+            </div>
+        </form>
+
+        <!-- Display Saved Details Here -->
+        <div id="display-container">
+            <h3>Saved Details</h3>
+            <p id="displayDetails">No details available.</p>
+            <!-- Use these details button -->
+            <button id="useDetailsButton" onclick="useDetails()">Use These Details</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Function to save details to localStorage
+    function saveDetails() {
+        const name = document.getElementById('name').value;
+        const age = document.getElementById('age').value;
+        const passport = document.getElementById('passport').value;
+        const phone = document.getElementById('phone').value;
+        const email = document.getElementById('email').value;
+
+        // Save details in localStorage
+        const passengerDetails = { name, age, passport, phone, email };
+        localStorage.setItem('passengerDetails', JSON.stringify(passengerDetails));
+
+        // Display the saved details
+        displaySavedDetails();
+    }
+
+    // Function to display the saved details below the form
+    function displaySavedDetails() {
+        const passengerDetails = JSON.parse(localStorage.getItem('passengerDetails'));
+
+        if (passengerDetails) {
+            document.getElementById('displayDetails').innerHTML = `
+                <strong>Name:</strong> ${passengerDetails.name}<br>
+                <strong>Age:</strong> ${passengerDetails.age}<br>
+                <strong>Passport Number:</strong> ${passengerDetails.passport}<br>
+                <strong>Phone Number:</strong> ${passengerDetails.phone}<br>
+                <strong>Email:</strong> ${passengerDetails.email}
+            `;
+            // Show the "Use These Details" button if details are available
+            document.getElementById('useDetailsButton').style.display = 'block';
+        } else {
+            document.getElementById('displayDetails').textContent = 'No details available.';
+            // Hide the "Use These Details" button if no details are available
+            document.getElementById('useDetailsButton').style.display = 'none';
+        }
+    }
+
+    // Function to redirect to payment page with details
+    function useDetails() {
+        const passengerDetails = JSON.parse(localStorage.getItem('passengerDetails'));
+
+        if (passengerDetails) {
+            const paymentPageUrl = `payment_methods.html?name=${encodeURIComponent(passengerDetails.name)}&age=${encodeURIComponent(passengerDetails.age)}&passport=${encodeURIComponent(passengerDetails.passport)}&phone=${encodeURIComponent(passengerDetails.phone)}&email=${encodeURIComponent(passengerDetails.email)}`;
+            window.location.href = paymentPageUrl;
+        } else {
+            alert("No saved details found. Please fill in your personal details first.");
+        }
+    }
+
+    // Load saved details on page load
+    document.addEventListener('DOMContentLoaded', displaySavedDetails);
+</script>
+
+</body>
+</html>
